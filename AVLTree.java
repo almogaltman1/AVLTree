@@ -8,7 +8,9 @@
  */
 
 public class AVLTree {
+  /*we check if we can do in parallel/*
 
+   */
   /**
    * public boolean empty()
    *
