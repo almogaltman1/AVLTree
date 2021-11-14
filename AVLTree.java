@@ -10,6 +10,7 @@
 public class AVLTree {
   /*we check if we can do in parallel/*
 
+	public static void main (String[]args){}
    */
   /**
    * public boolean empty()
