@@ -171,6 +171,48 @@ public class AVLTree {
     }
 
     /**
+     * public IAVLNode treePosition(int k)
+     * <p>
+     * Conducts a single left rotation on the tree.
+     * <p>
+     * precondition: there is a real left son for node
+     * precondition: node is not null
+     * postcondition: the result is a legal BTS after a single left rotation
+     */
+
+    public void rotationRight(IAVLNode node){
+        IAVLNode nodeParent = node.getParent();
+        IAVLNode leftSon = node.getLeft();
+        IAVLNode leftSonsRightSon = node.getLeft().getRight();
+
+        // adjust node parent related fields
+
+        if (nodeParent!=null){
+            if(leftSon.getKey()<nodeParent.getKey()){
+                nodeParent.setLeft(leftSon);
+            }
+            else{
+                nodeParent.setRight(leftSon);
+            }
+        }
+        else{
+            this.root=leftSon;
+        }
+
+        //adjust node related fields
+        node.setParent(leftSon);
+        node.setLeft(leftSonsRightSon);
+
+        // adjust left son related fields
+        leftSon.setParent(nodeParent);
+        leftSon.setRight(node);
+
+        // adjust left son's right son related fields
+        leftSonsRightSon.setParent(node);
+
+    }
+
+    /**
      * public interface IAVLNode
      * ! Do not delete or modify this - otherwise all tests will fail !
      */

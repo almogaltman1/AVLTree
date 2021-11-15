@@ -1,16 +1,23 @@
 public class Tester {
-    public static void main (String[]args){
+    public static void main(String[] args) {
         AVLTree t = new AVLTree();
-        AVLTree.AVLNode root = t.new AVLNode(10,"root",null);
-        AVLTree.AVLNode node1 = t.new AVLNode(9,"node1",root);
+        AVLTree.IAVLNode root = t.new AVLNode(10, "10", null);
+        AVLTree.IAVLNode node1 = t.new AVLNode(6, "6", root);
         root.setLeft(node1);
 
-        AVLTree.AVLNode node2 = t.new AVLNode(16,"node1",root);
+        AVLTree.IAVLNode node2 = t.new AVLNode(16, "16", root);
         root.setRight(node2);
 
+        AVLTree.IAVLNode node3 = t.new AVLNode(3, "3", node1);
+        node1.setLeft(node3);
 
-        AVLTree.IAVLNode a =  t.treePosition(root,10);
-        System.out.println(a.getKey());
+        AVLTree.IAVLNode node4 = t.new AVLNode(7, "7", node1);
+        node1.setRight(node4);
+
+//        printTree(root);
+
+        t.rotationRight(node1);
+//        root = t.getRoot();
 
         printTree(root);
 
@@ -18,8 +25,7 @@ public class Tester {
 
     static final int COUNT = 10;
 
-    static void printTreeUtil(AVLTree.IAVLNode root, int space)
-    {
+    static void printTreeUtil(AVLTree.IAVLNode root, int space) {
         // Base case
         if (root == null)
             return;
@@ -35,15 +41,14 @@ public class Tester {
         System.out.print("\n");
         for (int i = COUNT; i < space; i++)
             System.out.print(" ");
-        System.out.print(root.getKey()+":"+root.getValue() + "\n");
+        System.out.print(root.getKey() + ":" + root.getValue() + "\n");
 
         // Process left child
         printTreeUtil(root.getLeft(), space);
     }
 
     // Wrapper over print2DUtil()
-    static void printTree(AVLTree.IAVLNode root)
-    {
+    static void printTree(AVLTree.IAVLNode root) {
         // Pass initial space count as 0
         printTreeUtil(root, 0);
     }
