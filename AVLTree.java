@@ -119,7 +119,7 @@ public class AVLTree {
      * Returns the root AVL node, or null if the tree is empty
      */
     public IAVLNode getRoot() {
-        return null;
+        return this.root;
     }
 
     /**
