@@ -64,7 +64,10 @@ public class AVLTree {
      * or null if the tree is empty.
      */
     public String min() {
-        return "minDefaultString"; // to be replaced by student code
+        if (this.minNode==null){
+            return null;
+        }
+        return this.minNode.getValue();
     }
 
     /**
@@ -74,7 +77,10 @@ public class AVLTree {
      * or null if the tree is empty.
      */
     public String max() {
-        return "maxDefaultString"; // to be replaced by student code
+        if (this.maxNode==null){
+            return null;
+        }
+        return this.maxNode.getValue();
     }
 
     /**
