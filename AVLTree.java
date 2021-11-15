@@ -3,6 +3,7 @@
  * <p>
  * An implementation of aמ AVL Tree with
  * distinct integer keys and info.
+ * inv: tree is empty iff root is null
  */
 
 public class AVLTree {
@@ -18,7 +19,7 @@ public class AVLTree {
      * Returns true if and only if the tree is empty.
      */
     public boolean empty() {
-        return false; // to be replaced by student code
+        return this.root==null;
     }
 
     /**
