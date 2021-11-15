@@ -19,7 +19,8 @@ public class AVLTree {
      * Returns true if and only if the tree is empty.
      */
     public boolean empty() {
-        return this.root==null;
+        IAVLNode root = getRoot();
+        return root==null;
     }
 
     /**
@@ -29,7 +30,18 @@ public class AVLTree {
      * otherwise, returns null.
      */
     public String search(int k) {
-        return "searchDefaultString";  // to be replaced by student code
+        IAVLNode x = getRoot();
+        while(x.isRealNode()){
+            if(k==x.getKey()){
+                return x.getValue();
+            } else if(k<x.getKey()){
+                x=x.getLeft();
+            }
+            else{
+                x=x.getRight();
+            }
+        }
+        return null;
     }
 
     /**
