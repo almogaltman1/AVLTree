@@ -64,7 +64,7 @@ public class AVLTree {
      * or null if the tree is empty.
      */
     public String min() {
-        if (this.minNode==null){
+        if (this.minNode == null) {
             return null;
         }
         return this.minNode.getValue();
@@ -77,7 +77,7 @@ public class AVLTree {
      * or null if the tree is empty.
      */
     public String max() {
-        if (this.maxNode==null){
+        if (this.maxNode == null) {
             return null;
         }
         return this.maxNode.getValue();
@@ -146,6 +146,28 @@ public class AVLTree {
      */
     public int join(IAVLNode x, AVLTree t) {
         return -1;
+    }
+
+    /**
+     * public IAVLNode treePosition(int k)
+     * <p>
+     * Look for k in the tree. Returns the last node encountered
+     * <p>
+     * precondition: none
+     * postcondition: none
+     */
+    public IAVLNode treePosition(IAVLNode x,int k) {
+        IAVLNode y = null;
+        while (x != null && x.isRealNode()) {
+
+            y = x;
+            if (k == x.getKey()) {
+                return x;
+            }
+            x=(k<x.getKey())?x.getLeft():x.getRight();
+
+        }
+        return y;
     }
 
     /**
