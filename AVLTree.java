@@ -1,8 +1,9 @@
 /**
  * AVLTree
  * <p>
- * An implementation of aמ AVL Tree with
+ * An implementation of an AVL Tree with
  * distinct integer keys and info.
+ * <p>
  * inv: tree is empty iff root is null
  */
 
@@ -104,7 +105,12 @@ public class AVLTree {
      * or an empty array if the tree is empty.
      */
     public int[] keysToArray() {
-        return new int[33]; // to be replaced by student code
+        IAVLNode[] inorderNodes = this.inorder();
+        int[] keys = new int[inorderNodes.length];
+        for (int i = 0; i < inorderNodes.length; i++) {
+            keys[i] = inorderNodes[i].getKey();
+        }
+        return keys;
     }
 
     /**
@@ -115,7 +121,12 @@ public class AVLTree {
      * or an empty array if the tree is empty.
      */
     public String[] infoToArray() {
-        return new String[55]; // to be replaced by student code
+        IAVLNode[] inorderNodes = this.inorder();
+        String[] info = new String[inorderNodes.length];
+        for (int i = 0; i < inorderNodes.length; i++) {
+            info[i] = inorderNodes[i].getValue();
+        }
+        return info;
     }
 
     /**
@@ -162,10 +173,12 @@ public class AVLTree {
         return -1;
     }
 
+    //helping functions
+
     /**
      * public IAVLNode treePosition(int k)
      * <p>
-     * Look for k in the tree. Returns the last node encountered
+     * Looks for k in the tree. Returns the last node encountered
      * <p>
      * precondition: none
      * postcondition: none
@@ -173,13 +186,11 @@ public class AVLTree {
     public IAVLNode treePosition(IAVLNode x, int k) {
         IAVLNode y = null;
         while (x != null && x.isRealNode()) {
-
             y = x;
             if (k == x.getKey()) {
                 return x;
             }
             x = (k < x.getKey()) ? x.getLeft() : x.getRight();
-
         }
         return y;
     }
@@ -187,13 +198,12 @@ public class AVLTree {
     /**
      * public void rotationRight(IAVLNode node)
      * <p>
-     * Conducts a single left rotation on the tree.
+     * Conducts a single right rotation on the tree.
      * <p>
      * precondition: there is a real left son for node
      * precondition: node is not null
      * postcondition: the result is a legal BTS after a single left rotation
      */
-
     public void rotationRight(IAVLNode node) {
         IAVLNode nodeParent = node.getParent();
         IAVLNode leftSon = node.getLeft();
@@ -225,21 +235,75 @@ public class AVLTree {
     }
 
     /**
+     * public void rotationLeft(IAVLNode node)
+     * Conducts a single left rotation on the tree.
+     * precondition: there is a real right son for node
+     * precondition: node is not null
+     * postcondition: the result is a legal BTS after a single left rotation
+     */
+    public void rotationLeft(IAVLNode node) {
+        IAVLNode rightSon = node.getRight(); //this is the node we will do the rotate with
+        IAVLNode rightSonsLeftSon = rightSon.getLeft();
+        IAVLNode parent = node.getParent();
+
+        //set parents fields according to rightson
+        if (parent != null) {
+            if (node == parent.getLeft()) {
+                parent.setLeft(rightSon);
+            } else { //node == parent.getRight()
+                parent.setRight(rightSon);
+            }
+        } else {
+            this.root = rightSon;
+        }
+
+        //set rightSonsLefttSon to be right son of node
+        node.setRight(rightSonsLeftSon);
+        rightSonsLeftSon.setParent(node);
+
+        //set node to be left son of rightSon
+        rightSon.setLeft(node);
+        node.setParent(rightSon);
+
+        //set parent of rightSon to be the parent of node
+        rightSon.setParent(parent);
+
+    }
+
+    /**
      * public IAVLNode predecessor(IAVLNode x)
      * <p>
-     * finds the previous node by key value. If
+     * finds the previous node by key value.
      * <p>
      * precondition: x in tree
      * precondition: tree is not empty
      * postcondition: null iff min value
      */
-
     public IAVLNode predecessor(IAVLNode x) {
         if (x.getLeft().isRealNode()) {
             return maxSub(x.getLeft());
         }
         IAVLNode y = x.getParent();
         while (y != null && x == y.getLeft()) {
+            x = y;
+            y = x.getParent();
+        }
+        return y;
+    }
+
+    /**
+     * public IAVLNode successor(IAVLNode x)
+     * finds the next node by key value.
+     * precondition: x in tree
+     * precondition: tree is not empty
+     * postcondition: null iff max value
+     */
+    public IAVLNode successor(IAVLNode x) {
+        if (x.getRight().isRealNode()) {
+            return minSub(x.getRight());
+        }
+        IAVLNode y = x.getParent();
+        while (y != null && x == y.getRight()) {
             x = y;
             y = x.getParent();
         }
@@ -255,12 +319,55 @@ public class AVLTree {
      * precondition: tree is not empty
      * postcondition: none
      */
-
     public IAVLNode maxSub(IAVLNode x) {
         while (x.getRight().isRealNode()) {
             x = x.getRight();
         }
         return x;
+    }
+
+    /**
+     * public IAVLNode minSub(IAVLNode x)
+     * finds the minimum in subtree
+     * precondition: x in tree
+     * precondition: tree is not empty
+     * postcondition: none
+     */
+    public IAVLNode minSub(IAVLNode x) {
+        while (x.getLeft().isRealNode()) {
+            x = x.getLeft();
+        }
+        return x;
+    }
+
+    /**
+     * public IAVLNode[] inorder()
+     * Returns array of the tree nodes, inorder
+     * if the tree is empty returns empty array
+     * index is for counting the index of array in recursion
+     */
+    private static int index = 0;
+    public IAVLNode[] inorder() {
+        IAVLNode[] treeNodes = {};
+        if (this.root != null) {
+            treeNodes = new IAVLNode[this.root.getSize()];
+            inorder_rec(treeNodes, this.root);
+        }
+        index = 0;
+        return treeNodes;
+    }
+
+    /**
+     * public void inorder_rec(IAVLNode[] arrToFill, IAVLNode x, int index)
+     * fills arrToFill, inplace, where the nodes are from tree with the root x
+     */
+    public void inorder_rec(IAVLNode[] arrToFill, IAVLNode x) {
+        if (x.isRealNode()) {
+            inorder_rec(arrToFill, x.getLeft());
+            arrToFill[index] = x;
+            index++;
+            inorder_rec(arrToFill, x.getRight());
+        }
     }
 
 
@@ -290,6 +397,10 @@ public class AVLTree {
         public void setHeight(int height); // Sets the height of the node.
 
         public int getHeight(); // Returns the height of the node (-1 for virtual nodes).
+
+        public int getSize();
+
+        public void setSize(int size);
     }
 
     /**
@@ -312,6 +423,7 @@ public class AVLTree {
         int size;
 
         /**
+         * public AVLNode(IAVLNode parent)
          * virtual leaves constructor
          */
         public AVLNode(IAVLNode parent) {
@@ -326,6 +438,7 @@ public class AVLTree {
         }
 
         /**
+         * public AVLNode(int key, String info, IAVLNode parent)
          * real nodes constructor
          */
         public AVLNode(int key, String info, IAVLNode parent) {
@@ -389,6 +502,14 @@ public class AVLTree {
 
         public void demote() {
             this.rank--;
+        }
+
+        public int getSize() {
+            return this.size;
+        }
+
+        public void setSize(int size){
+            this.size = size;
         }
     }
 
