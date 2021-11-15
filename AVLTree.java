@@ -20,7 +20,7 @@ public class AVLTree {
      */
     public boolean empty() {
         IAVLNode root = getRoot();
-        return root==null;
+        return root == null;
     }
 
     /**
@@ -31,14 +31,15 @@ public class AVLTree {
      */
     public String search(int k) {
         IAVLNode x = getRoot();
-        while(x.isRealNode()){
-            if(k==x.getKey()){
-                return x.getValue();
-            } else if(k<x.getKey()){
-                x=x.getLeft();
-            }
-            else{
-                x=x.getRight();
+        if (x != null) {
+            while (x.isRealNode()) {
+                if (k == x.getKey()) {
+                    return x.getValue();
+                } else if (k < x.getKey()) {
+                    x = x.getLeft();
+                } else {
+                    x = x.getRight();
+                }
             }
         }
         return null;
@@ -169,7 +170,7 @@ public class AVLTree {
      * precondition: none
      * postcondition: none
      */
-    public IAVLNode treePosition(IAVLNode x,int k) {
+    public IAVLNode treePosition(IAVLNode x, int k) {
         IAVLNode y = null;
         while (x != null && x.isRealNode()) {
 
@@ -177,7 +178,7 @@ public class AVLTree {
             if (k == x.getKey()) {
                 return x;
             }
-            x=(k<x.getKey())?x.getLeft():x.getRight();
+            x = (k < x.getKey()) ? x.getLeft() : x.getRight();
 
         }
         return y;
@@ -193,23 +194,21 @@ public class AVLTree {
      * postcondition: the result is a legal BTS after a single left rotation
      */
 
-    public void rotationRight(IAVLNode node){
+    public void rotationRight(IAVLNode node) {
         IAVLNode nodeParent = node.getParent();
         IAVLNode leftSon = node.getLeft();
         IAVLNode leftSonsRightSon = node.getLeft().getRight();
 
         // adjust node parent related fields
 
-        if (nodeParent!=null){
-            if(leftSon.getKey()<nodeParent.getKey()){
+        if (nodeParent != null) {
+            if (leftSon.getKey() < nodeParent.getKey()) {
                 nodeParent.setLeft(leftSon);
-            }
-            else{
+            } else {
                 nodeParent.setRight(leftSon);
             }
-        }
-        else{
-            this.root=leftSon;
+        } else {
+            this.root = leftSon;
         }
 
         //adjust node related fields
@@ -235,14 +234,14 @@ public class AVLTree {
      * postcondition: null iff min value
      */
 
-    public IAVLNode predecessor(IAVLNode x){
-        if(x.getLeft().isRealNode()){
+    public IAVLNode predecessor(IAVLNode x) {
+        if (x.getLeft().isRealNode()) {
             return maxSub(x.getLeft());
         }
         IAVLNode y = x.getParent();
-        while (y!=null && x==y.getLeft()){
-            x=y;
-            y=x.getParent();
+        while (y != null && x == y.getLeft()) {
+            x = y;
+            y = x.getParent();
         }
         return y;
     }
@@ -257,9 +256,9 @@ public class AVLTree {
      * postcondition: none
      */
 
-    public IAVLNode maxSub(IAVLNode x){
-        while(x.getRight().isRealNode()){
-            x=x.getRight();
+    public IAVLNode maxSub(IAVLNode x) {
+        while (x.getRight().isRealNode()) {
+            x = x.getRight();
         }
         return x;
     }
