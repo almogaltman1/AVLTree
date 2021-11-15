@@ -171,7 +171,7 @@ public class AVLTree {
     }
 
     /**
-     * public IAVLNode treePosition(int k)
+     * public void rotationRight(IAVLNode node)
      * <p>
      * Conducts a single left rotation on the tree.
      * <p>
@@ -211,6 +211,46 @@ public class AVLTree {
         leftSonsRightSon.setParent(node);
 
     }
+
+    /**
+     * public IAVLNode predecessor(IAVLNode x)
+     * <p>
+     * finds the previous node by key value. If
+     * <p>
+     * precondition: x in tree
+     * precondition: tree is not empty
+     * postcondition: null iff min value
+     */
+
+    public IAVLNode predecessor(IAVLNode x){
+        if(x.getLeft().isRealNode()){
+            return maxSub(x.getLeft());
+        }
+        IAVLNode y = x.getParent();
+        while (y!=null && x==y.getLeft()){
+            x=y;
+            y=x.getParent();
+        }
+        return y;
+    }
+
+    /**
+     * public IAVLNode maxSub(IAVLNode x)
+     * <p>
+     * finds the maximum in subtree
+     * <p>
+     * precondition: x in tree
+     * precondition: tree is not empty
+     * postcondition: none
+     */
+
+    public IAVLNode maxSub(IAVLNode x){
+        while(x.getRight().isRealNode()){
+            x=x.getRight();
+        }
+        return x;
+    }
+
 
     /**
      * public interface IAVLNode

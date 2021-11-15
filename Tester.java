@@ -14,12 +14,13 @@ public class Tester {
         AVLTree.IAVLNode node4 = t.new AVLNode(7, "7", node1);
         node1.setRight(node4);
 
+        System.out.println(t.predecessor(node2).getKey());
 //        printTree(root);
 
-        t.rotationRight(node1);
+//        t.rotationRight(node1);
 //        root = t.getRoot();
 
-        printTree(root);
+//        printTree(root);
 
     }
 
