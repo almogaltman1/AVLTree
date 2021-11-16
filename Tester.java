@@ -1,64 +1,32 @@
-import java.util.Arrays;
-
 public class Tester {
     public static void main(String[] args) {
         AVLTree t = new AVLTree();
-        AVLTree.IAVLNode root = t.new AVLNode(10, "10", null);
-        AVLTree.IAVLNode node1 = t.new AVLNode(6, "6", root);
+        AVLTree.IAVLNode root = t.new AVLNode(4, "4", null);
+        root.setHeight(2);
+
+        AVLTree.IAVLNode node1 = t.new AVLNode(2, "2", root);
         root.setLeft(node1);
+        node1.setHeight(1);
 
-        AVLTree.IAVLNode node2 = t.new AVLNode(16, "16", root);
+        AVLTree.IAVLNode node2 = t.new AVLNode(6, "6", root);
         root.setRight(node2);
+        node2.setHeight(1);
 
-        AVLTree.IAVLNode node3 = t.new AVLNode(3, "3", node1);
+        AVLTree.IAVLNode node3 = t.new AVLNode(1, "1", node1);
         node1.setLeft(node3);
 
-        AVLTree.IAVLNode node4 = t.new AVLNode(7, "7", node1);
+        AVLTree.IAVLNode node4 = t.new AVLNode(3, "3", node1);
         node1.setRight(node4);
 
-//        System.out.println(t.predecessor(node2).getKey());
-//        System.out.println(t.successor(node4).getKey());
-//
-//        t.root=root;
-//        System.out.println(t.search(16));
-//        printTree(root);
-//
-//        t.rotationRight(node1);
-//        root = t.getRoot();
-//        printTree(root);
+        AVLTree.IAVLNode node5 = t.new AVLNode(5, "5", node2);
+        node2.setLeft(node5);
 
-        //build new tree for the rotation right test
-        AVLTree t2 = new AVLTree();
-        AVLTree.IAVLNode root2 = t2.new AVLNode(6, "6", null);
-        AVLTree.IAVLNode node12 = t2.new AVLNode(10, "10", root2);
-        root2.setRight(node12);
+        AVLTree.IAVLNode node6 = t.new AVLNode(7, "7", node2);
+        node2.setRight(node6);
 
-        AVLTree.IAVLNode node22 = t2.new AVLNode(3, "3", root2);
-        root2.setLeft(node22);
+        t.root=root;
+        printTree(root);
 
-        AVLTree.IAVLNode node32 = t2.new AVLNode(16, "16", node12);
-        node12.setRight(node32);
-
-        AVLTree.IAVLNode node42 = t2.new AVLNode(7, "7", node12);
-        node12.setLeft(node42);
-
-        t2.root = root2;
-
-        //will not  really work until set size be good
-//        t2.getRoot().setSize(5);
-//        node12.setSize(3);
-//        node22.setSize(1);
-//        node32.setSize(1);
-//        node42.setSize(1);
-//        int[] keys = t2.keysToArray();
-//        String[] info = t2.infoToArray();
-//        System.out.println(Arrays.toString(keys));
-//        System.out.println(Arrays.toString(info));
-
-//        t2.rotationLeft(root2);
-//        root2 = t2.getRoot();
-//
-//        printTree(root2);
 
     }
 

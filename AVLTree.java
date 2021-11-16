@@ -496,13 +496,6 @@ public class AVLTree {
             return this.rank;
         }
 
-        public void promote() {
-            this.rank++;
-        }
-
-        public void demote() {
-            this.rank--;
-        }
 
         public int getSize() {
             return this.size;
