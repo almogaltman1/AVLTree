@@ -56,6 +56,44 @@ public class AVLTree {
      * Returns -1 if an item with key k already exists in the tree.
      */
     public int insert(int k, String i) {
+        IAVLNode parentToNewNode = treePosition(this.root, k); //will be null iff tree is empty
+        IAVLNode newNode = new AVLNode(k, i, parentToNewNode);
+
+        //insert to an empty tree
+        if (this.root == null) {
+            this.root = newNode;
+            this.maxNode = newNode;
+            this.minNode = newNode;
+            return 0; //no re-balance
+        }
+        //else, tree is not empty and parentToNewNose is not null
+        if (parentToNewNode.getKey() == k) {
+            //we already have this key in the tree
+            return -1;
+        }
+
+        //else - insert (tree is not empty, and key is valid)
+        //replace min or max if needed
+        if (newNode.getKey() < this.minNode.getKey()) {
+            this.minNode = newNode;
+        }
+        else if (newNode.getKey() > this.maxNode.getKey()) {
+            this.maxNode = newNode;
+        }
+        //chose right or left son
+        if (newNode.getKey() < parentToNewNode.getKey()) {
+            parentToNewNode.setLeft(newNode);
+        }
+        else {
+            parentToNewNode.setRight(newNode);
+        }
+        //update size to all parents in the subtree
+        IAVLNode parentSizeUpdate = parentToNewNode;
+        while (parentSizeUpdate != null) {
+            parentSizeUpdate.setSize(parentSizeUpdate.getSize() + 1);
+            parentSizeUpdate = parentSizeUpdate.getParent();
+        }
+
         return 420;    // to be replaced by student code
     }
 
@@ -181,7 +219,7 @@ public class AVLTree {
      * Looks for k in the tree. Returns the last node encountered
      * <p>
      * precondition: none
-     * postcondition: none
+     * postcondition: null iff tree is empty
      */
     public IAVLNode treePosition(IAVLNode x, int k) {
         IAVLNode y = null;
