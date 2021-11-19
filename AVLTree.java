@@ -13,7 +13,6 @@ public class AVLTree {
     IAVLNode minNode;
     IAVLNode maxNode;
 
-
     /**
      * public boolean empty()
      * <p>
@@ -107,8 +106,340 @@ public class AVLTree {
      * Returns -1 if an item with key k was not found in the tree.
      */
     public int delete(int k) {
-        return 421;    // to be replaced by student code
+        // empty tree
+        if (this.empty()) {
+            return -1;
+        }
+        IAVLNode nodeToDelete = treePosition(this.root, k);
+
+        // node not in tree
+        if (k != nodeToDelete.getKey()) {
+            return -1;
+        }
+
+        // update min and max fields in the tree
+        updateMinMaxFields(nodeToDelete);
+
+        // delete the node and find from which node to start the rebalance from
+        IAVLNode nodeForRebalance = deleteBeforeRebalance(nodeToDelete);
+
+        return rebalanceAfterDelete(nodeForRebalance);
     }
+
+    /**
+     * public void updateMinMaxFields(IAVLNode node)
+     * <p>
+     * Updates min and max fields of the AVLTree
+     * precondition: tree is not empty
+     */
+
+    public void updateMinMaxFields(IAVLNode node) {
+        if (this.minNode.getKey() == node.getKey()) {
+            IAVLNode successor = successor(node);
+            this.minNode = successor;
+        }
+
+        if (this.maxNode.getKey() == node.getKey()) {
+            IAVLNode predecessor = predecessor(node);
+            this.maxNode = predecessor;
+        }
+    }
+
+    /**
+     * public IAVLNode deleteBeforeRebalance(IAVLNode node)
+     * <p>
+     * Deletes node from tree and return the node from which we need to start the rebalancing
+     * precondition: tree is not empty
+     */
+
+    public IAVLNode deleteBeforeRebalance(IAVLNode node) {
+        if (!node.getRight().isRealNode() || !node.getLeft().isRealNode()) {
+
+            // case when leaf
+            if (!node.getRight().isRealNode() && !node.getLeft().isRealNode()) {
+                return deleteBeforeRebalanceLeaf(node);
+            }
+            // case when unary node
+            else {
+                return deleteBeforeRebalanceUnary(node);
+            }
+        }
+
+        // case when binary node
+        IAVLNode successor = successor(node);
+
+        // successor is either leaf or unary node
+        IAVLNode nodeForRebalance = deleteBeforeRebalance(successor);
+
+        // set successor's fields
+        successor.setParent(node.getParent());
+        successor.setRight(node.getRight());
+        successor.setLeft(node.getLeft());
+        successor.setHeight(node.getHeight());
+        successor.setSize(node.getSize());
+
+        // set node sons' fields
+        node.getRight().setParent(successor);
+        node.getLeft().setParent(successor);
+
+        if (this.root == node) {
+            this.root = successor;
+        } else {
+            if (node.getParent().getRight() == node) {
+                node.getParent().setRight(successor);
+            } else {
+                node.getParent().setLeft(successor);
+            }
+        }
+        return nodeForRebalance;
+
+
+    }
+
+    /**
+     * public IAVLNode deleteBeforeRebalanceLeaf(IAVLNode node)
+     * <p>
+     * Deletes leaf from tree and return the node from which we need to start the rebalancing
+     * precondition: node is leaf
+     */
+
+    public IAVLNode deleteBeforeRebalanceLeaf(IAVLNode node) {
+        if (node == this.root) {
+            this.root = null;
+            return null;
+        }
+
+        IAVLNode parent = node.getParent();
+        if (parent.getRight() == node) {
+            parent.setRight(new AVLNode(parent));
+        } else {
+            parent.setLeft(new AVLNode(parent));
+        }
+
+        return parent;
+    }
+
+
+    /**
+     * public IAVLNode deleteBeforeRebalanceUnary(IAVLNode node)
+     * <p>
+     * Deletes unary node from tree and return the node from which we need to start the rebalancing
+     * precondition: node is unary
+     */
+
+    public IAVLNode deleteBeforeRebalanceUnary(IAVLNode node) {
+
+        IAVLNode son = null;
+        IAVLNode parent = node.getParent();
+        if (node.getLeft().isRealNode()) {
+            son = node.getLeft();
+        } else {
+            son = node.getRight();
+        }
+
+        son.setParent(parent);
+        if (this.root == node) {
+            this.root = son;
+        } else {
+            if (parent.getLeft() == node) {
+                parent.setLeft(son);
+            } else {
+                parent.setRight(son);
+            }
+        }
+
+        return parent;
+    }
+
+
+    /**
+     * public void updateSizeForAncestors(IAVLNode node)
+     * <p>
+     * updated all sized of ancestors after a deletion was made
+     * precondition: none
+     */
+
+    public void updateSizeForAncestors(IAVLNode node,int amount) {
+        while (node != null) {
+            node.setSize(node.getSize() + amount);
+            node = node.getParent();
+        }
+
+    }
+
+    /**
+     * public int rebalanceAfterDelete(IAVLNode node)
+     * <p>
+     * rebalances the tree after a deletion of a node
+     * precondition: none
+     */
+    public int rebalanceAfterDelete(IAVLNode node) {
+        int numOperations = 0;
+        int diff;
+        while (node != null &&
+                (diff = Math.abs(node.getLeft().getHeight() - node.getRight().getHeight())) != 1) {
+
+            if (diff == 0) {
+                /* case 1:
+                  z
+                2/ \2
+                x   y
+                */
+                node.setHeight(node.getHeight() - 1);
+                node.setSize(node.getSize() - 1);
+                node = node.getParent();
+                numOperations++;
+            }
+
+            int leftDiff = node.getHeight() - node.getLeft().getHeight();
+            int rightDiff = node.getHeight() - node.getRight().getHeight();
+
+            if (leftDiff == 3 && rightDiff == 1) {
+                IAVLNode rightSon = node.getRight();
+                if (rightSon.isRealNode()) {
+                    int rightLeftDiff = rightSon.getHeight() - rightSon.getLeft().getHeight();
+                    int rightRightDiff = rightSon.getHeight() - rightSon.getRight().getHeight();
+                    if (rightLeftDiff == 1 && rightRightDiff == 1) {
+                    /* case 2:
+                      z
+                    3/ \1
+                    x   y
+                       1/ \1
+                       a   b
+                    */
+                        rotationLeft(node);
+                        node.setHeight(node.getHeight() - 1);
+                        node.getParent().setHeight(node.getParent().getHeight() + 1);
+                        node.setSize(node.getLeft().getSize() + node.getRight().getSize() + 1);
+                        IAVLNode tempParent = node.getParent();
+                        tempParent.setSize(tempParent.getLeft().getSize() + tempParent.getRight().getSize() + 1);
+                        numOperations += 3;
+                        node = node.getParent();
+                        break;
+                    } else if (rightLeftDiff == 2 && rightRightDiff == 1) {
+                    /* case 3:
+                      z
+                    3/ \1
+                    x   y
+                       2/ \1
+                       a   b
+                    */
+                        rotationLeft(node);
+                        node.setHeight(node.getHeight() - 2);
+                        node.setSize(node.getLeft().getSize() + node.getRight().getSize() + 1);
+                        IAVLNode tempParent = node.getParent();
+                        tempParent.setSize(tempParent.getLeft().getSize() + tempParent.getRight().getSize() + 1);
+                        numOperations += 3;
+                        node = node.getParent().getParent();
+                    } else { // the last case is when rightLeftDiff == 1 && rightRightDiff == 2
+                        if (rightSon.getLeft().isRealNode()) {
+                        /* case 4:
+                          z
+                        3/ \1
+                        x   y
+                           1/ \2
+                           a   b
+                          / \
+                         c   d
+                        */
+
+                            rotationRight(node.getRight());
+                            rotationLeft(node);
+                            node.setHeight(node.getHeight() - 2);
+                            node = node.getParent();
+                            node.setHeight(node.getHeight() + 1);
+                            IAVLNode tempRightSon = node.getRight();
+                            tempRightSon.setHeight(tempRightSon.getHeight() - 1);
+
+                            IAVLNode tempLeftSon = node.getLeft();
+                            tempRightSon.setSize(tempRightSon.getLeft().getSize() + tempRightSon.getRight().getSize() + 1);
+                            tempLeftSon.setSize(tempLeftSon.getLeft().getSize() + tempLeftSon.getRight().getSize() + 1);
+                            node.setSize(node.getLeft().getSize() + node.getRight().getSize() + 1);
+
+                            numOperations += 6;
+                            node = node.getParent();
+                        }
+                    }
+
+                }
+            } else { // all cases leftDiff == 1 && rightDiff == 3 - symmetry
+                IAVLNode leftSon = node.getLeft();
+                if (leftSon.isRealNode()) {
+                    int leftLeftDiff = leftSon.getHeight() - leftSon.getLeft().getHeight();
+                    int leftRightDiff = leftSon.getHeight() - leftSon.getRight().getHeight();
+                    if (leftLeftDiff == 1 && leftRightDiff == 1) {
+                    /* case 5 (2 symmetry):
+                          z
+                        1/ \3
+                        x   y
+                      1/ \1
+                      a   b
+                    */
+                        rotationRight(node);
+                        node.setHeight(node.getHeight() - 1);
+                        node.getParent().setHeight(node.getParent().getHeight() + 1);
+                        node.setSize(node.getLeft().getSize() + node.getRight().getSize() + 1);
+                        IAVLNode tempParent = node.getParent();
+                        tempParent.setSize(tempParent.getLeft().getSize() + tempParent.getRight().getSize() + 1);
+                        numOperations += 3;
+                        node = node.getParent();
+                        break;
+                    } else if (leftLeftDiff == 1 && leftRightDiff == 2) {
+                    /* case 6 (3 symmetry):
+                          z
+                        1/ \3
+                        x   y
+                      1/ \2
+                      a   b
+                    */
+                        rotationRight(node);
+                        node.setHeight(node.getHeight() - 2);
+                        node.setSize(node.getLeft().getSize() + node.getRight().getSize() + 1);
+                        IAVLNode tempParent = node.getParent();
+                        tempParent.setSize(tempParent.getLeft().getSize() + tempParent.getRight().getSize() + 1);
+                        numOperations += 3;
+                        node = node.getParent().getParent();
+                    } else {
+                        if (leftSon.getRight().isRealNode() && leftSon.getRight().getHeight() == 1 && leftSon.getLeft().getHeight() == 1) {
+                        /* case 7(symmetry 4):
+                          z
+                        1/ \3
+                        x   y
+                      2/ \1
+                      a   b
+                         / \
+                        c   d
+                        */
+
+                            rotationLeft(node.getLeft());
+                            rotationRight(node);
+                            node.setHeight(node.getHeight() - 2);
+                            node = node.getParent();
+                            node.setHeight(node.getHeight() + 1);
+                            IAVLNode tempLeftSon = node.getLeft();
+                            tempLeftSon.setHeight(tempLeftSon.getHeight() - 1);
+
+                            IAVLNode tempRightSon = node.getRight();
+                            tempRightSon.setSize(tempRightSon.getLeft().getSize() + tempRightSon.getRight().getSize() + 1);
+                            tempLeftSon.setSize(tempLeftSon.getLeft().getSize() + tempLeftSon.getRight().getSize() + 1);
+                            node.setSize(node.getLeft().getSize() + node.getRight().getSize() + 1);
+
+                            numOperations += 6;
+                            node = node.getParent();
+
+                        }
+                    }
+
+                }
+            }
+
+        }
+
+        updateSizeForAncestors(node,-1);
+
+        return numOperations;
+    }
+
 
     /**
      * public String min()
@@ -149,6 +480,7 @@ public class AVLTree {
             keys[i] = inorderNodes[i].getKey();
         }
         return keys;
+
     }
 
     /**
@@ -173,7 +505,10 @@ public class AVLTree {
      * Returns the number of nodes in the tree.
      */
     public int size() {
-        return 422; // to be replaced by student code
+        if (this.root == null) {
+            return 0;
+        }
+        return this.root.getSize();
     }
 
     /**
@@ -385,6 +720,7 @@ public class AVLTree {
      * index is for counting the index of array in recursion
      */
     private static int index = 0;
+
     public IAVLNode[] inorder() {
         IAVLNode[] treeNodes = {};
         if (this.root != null) {
@@ -539,7 +875,7 @@ public class AVLTree {
             return this.size;
         }
 
-        public void setSize(int size){
+        public void setSize(int size) {
             this.size = size;
         }
     }
