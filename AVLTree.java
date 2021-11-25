@@ -75,7 +75,7 @@ public class AVLTree {
         IAVLNode nodeForRebalance = insertBeforeRebalance(newNode, parentToNewNode);
 
         //rebalnce
-        return rebalanceAfterInsert(nodeForRebalance);
+        return rebalanceAfterInsertOrJoin(nodeForRebalance);
     }
 
     /**
@@ -99,7 +99,7 @@ public class AVLTree {
         }
 
         // update min and max fields in the tree
-        updateMinMaxFields(nodeToDelete);
+        updateMinMaxFieldsInDelete(nodeToDelete);
 
         // delete the node and find from which node to start the rebalance from
         IAVLNode nodeForRebalance = deleteBeforeRebalance(nodeToDelete);
@@ -196,7 +196,62 @@ public class AVLTree {
      * postcondition: none
      */
     public AVLTree[] split(int x) {
-        return null;
+        //min and max of subtrees will not br correct until end
+        AVLTree t1 = new AVLTree();
+        AVLTree t2 = new AVLTree();
+        AVLTree temp = new AVLTree();
+        IAVLNode nodex = treePosition(this.getRoot(), x);
+        IAVLNode sonToTree;
+        if (nodex.getLeft().isRealNode())
+        {
+            IAVLNode leftx = nodex.getLeft();
+            t1.fromNodeToTree(leftx);
+        }
+        if (nodex.getRight().isRealNode())
+        {
+            IAVLNode rightx = nodex.getRight();
+            t2.fromNodeToTree(rightx);
+        }
+        nodex = nodex.getParent();
+        IAVLNode parentx;
+        while (nodex != null) {
+            parentx = nodex.getParent();
+            if (nodex.getKey() < x)
+            {
+                sonToTree = nodex.getLeft();
+                if (sonToTree.isRealNode()){
+                    temp.fromNodeToTree(sonToTree);
+                }
+                nodex.setParent(null);
+                nodex.setRight(new AVLNode(nodex));
+                nodex.setLeft(new AVLNode(nodex));
+                nodex.setHeight(0);
+                nodex.setSize(1);
+                t1.join(nodex,temp);
+            }
+            else { //nodex is right child
+                sonToTree = nodex.getRight();
+                if (sonToTree.isRealNode()){
+                    temp.fromNodeToTree(sonToTree);
+                }
+                nodex.setParent(null);
+                nodex.setRight(new AVLNode(nodex));
+                nodex.setLeft(new AVLNode(nodex));
+                nodex.setHeight(0);
+                nodex.setSize(1);
+                t2.join(nodex, temp);
+            }
+            nodex = parentx;
+        }
+        //now we have t1 and t2, but min and max are wrong
+        if (!t1.empty()){
+            t1.updateMinMaxForJoin();
+        }
+        if (!t2.empty()){
+            t2.updateMinMaxForJoin();
+        }
+        AVLTree[] splited = {t1,t2};
+        return splited;
     }
 
     /**
@@ -209,7 +264,87 @@ public class AVLTree {
      * postcondition: none
      */
     public int join(IAVLNode x, AVLTree t) {
-        return -1;
+        if (this.empty() || t.empty()){
+            int ret = 1;
+            if (this.empty())
+            {
+                if (!t.empty()){
+                    ret += t.getRoot().getHeight() + 1;
+                    this.root = t.getRoot();
+                    this.minNode = t.minNode;
+                    this.maxNode = t.maxNode;
+                }
+            }
+            else if (t.empty()){
+                ret += this.getRoot().getHeight() + 1;
+            }
+            this.insert(x.getKey(), x.getValue());
+            return ret;
+        }
+        AVLTree t1, t2;
+        IAVLNode min, max, newRoot;
+        if (t.getRoot().getHeight() < this.getRoot().getHeight()){
+            t1 = t;
+            t2 = this;
+            newRoot = this.getRoot();
+        }
+        else {
+            t1 = this;
+            t2 = t;
+            newRoot = t.getRoot();
+        }
+        int low = t1.getRoot().getHeight();
+        int high = t2.getRoot().getHeight();
+        IAVLNode a = t1.getRoot();
+        IAVLNode b = t2.getRoot();
+        boolean goLeft = b.getKey() > x.getKey();
+        while (b.getHeight() > low) {
+            if (goLeft){
+                b = b.getLeft();
+            }
+            else {
+                b = b.getRight();
+            }
+
+        }
+        a.setParent(x);
+        IAVLNode c = b.getParent();
+        b.setParent(x);
+        if (a.getKey() < b.getKey())
+        {
+            x.setLeft(a);
+            x.setRight(b);
+            min = t1.minNode;
+            max = t2.maxNode;
+        }
+        else
+        {
+            x.setLeft(b);
+            x.setRight(a);
+            min = t2.minNode;
+            max = t1.maxNode;
+        }
+        x.setHeight(a.getHeight() + 1);
+        x.setSize(x.getLeft().getSize() + x.getRight().getSize() + 1);
+        this.minNode = min;
+        this.maxNode = max;
+        if (c == null) //same heights
+        {
+            x.setParent(null);
+            this.root = x;
+        }
+        else {
+            if (x.getKey() < c.getKey()){
+                c.setLeft(x);
+            }
+            else {
+                c.setRight(x);
+            }
+            x.setParent(c);
+            this.root = newRoot;
+            rebalanceAfterInsertOrJoin(c);
+        }
+        return high - low + 1;
     }
 
 
@@ -425,12 +560,11 @@ public class AVLTree {
      * updated all sized of ancestors after a deletion was made
      * precondition: none
      */
-    public void updateSizeForAncestors(IAVLNode node, int amount) {
-        while (node != null) {
-            node.setSize(node.getSize() + amount);
+    public void updateSizeForAncestors(IAVLNode node) {
+        while(node != null){
+            node.setSize(node.getLeft().getSize() + node.getRight().getSize() + 1);
             node = node.getParent();
         }
-
     }
 
 
@@ -464,7 +598,7 @@ public class AVLTree {
      * <p>
      * rebalances the tree after an insert of a node
      */
-    public int rebalanceAfterInsert(IAVLNode node) {
+    public int rebalanceAfterInsertOrJoin(IAVLNode node) {
         int numOperations = 0;
         int[] diffs = diffBetweenParentAndChildes(node);
         int diffLeft = diffs[0];
@@ -486,8 +620,14 @@ public class AVLTree {
                     numOperations += 2;
                 } else if (leftLeftDiff == 2 && leftRightDiff == 1) {
                     //case 3 isLeft == true
-                    node = case3InserRebalance(node, true);
+                    node = case3InsertRebalance(node, true);
                     numOperations += 5;
+                }
+                //for join
+                else if (leftLeftDiff == 1 && leftRightDiff == 1) {
+                    //case 4 isLeft == true
+                    node = case4JoinRebalance(node, true);
+                    numOperations += 2; //dosen't matter
                 }
             } else if (diffLeft == 2 && diffRight == 0) {
                 IAVLNode rightSon = node.getRight();
@@ -500,8 +640,14 @@ public class AVLTree {
                     numOperations += 2;
                 } else if (rightLeftDiff == 1 && rightRightDiff == 2) {
                     //case 3 isLeft == false
-                    node = case3InserRebalance(node, false);
+                    node = case3InsertRebalance(node, false);
                     numOperations += 5;
+                }
+                //for join
+                else if (rightLeftDiff == 1 && rightRightDiff == 1) {
+                    //case 4 isLeft == false
+                    node = case4JoinRebalance(node, false);
+                    numOperations += 2; //dosen't matter
                 }
             }
             //update before checking the while condition
@@ -511,7 +657,7 @@ public class AVLTree {
                 diffRight = diffs[1];
             }
         }
-        updateSizeForAncestors(node, 1);
+        updateSizeForAncestors(node);
         return numOperations;
     }
 
@@ -584,7 +730,7 @@ public class AVLTree {
      *  / \
      * c   d
      */
-    public IAVLNode case3InserRebalance(IAVLNode node, boolean isLeft) {
+    public IAVLNode case3InsertRebalance(IAVLNode node, boolean isLeft) {
         IAVLNode tempOtherSon;
         if (isLeft) {
             rotationLeft(node.getLeft());
@@ -600,6 +746,37 @@ public class AVLTree {
         node.setSize(node.getLeft().getSize() + node.getRight().getSize() + 1);
         tempOtherSon.setHeight(tempOtherSon.getHeight() - 1);
         tempOtherSon.setSize(tempOtherSon.getLeft().getSize() + tempOtherSon.getRight().getSize() + 1);
+        node = node.getParent();
+        node.setHeight(node.getHeight() + 1);
+        node.setSize(node.getLeft().getSize() + node.getRight().getSize() + 1);
+        return node.getParent();
+    }
+
+    /**
+     * public IAVLNode case4JoinRebalance(IAVLNode node, boolean isLeft)
+     * <p>
+     * rebalance local and return the next node that need to rebalance
+     * <p>
+     * precondition: we are in this case if isLeft == true:
+     *     z
+     *   0/ \2
+     *   x   y
+     * 1/ \1
+     * a   b
+     * and in this case if isLeft == false:
+     *   z
+     * 2/ \0
+     * x   y
+     *   1/ \1
+     *   a   b
+     */
+    public IAVLNode case4JoinRebalance(IAVLNode node, boolean isLeft) {
+        if (isLeft) {
+            rotationRight(node);
+        } else {
+            rotationLeft(node);
+        }
+        node.setSize(node.getLeft().getSize() + node.getRight().getSize() + 1);
         node = node.getParent();
         node.setHeight(node.getHeight() + 1);
         node.setSize(node.getLeft().getSize() + node.getRight().getSize() + 1);
@@ -629,7 +806,7 @@ public class AVLTree {
      * <p>
      * precondition: tree is not empty
      */
-    public void updateMinMaxFields(IAVLNode node) {
+    public void updateMinMaxFieldsInDelete(IAVLNode node) {
         if (this.minNode.getKey() == node.getKey()) {
             IAVLNode successor = successor(node);
             this.minNode = successor;
@@ -663,6 +840,7 @@ public class AVLTree {
         IAVLNode successor = successor(node);
 
         // successor is either leaf or unary node
+        boolean directChild = node.getRight() == successor;
         IAVLNode nodeForRebalance = deleteBeforeRebalance(successor);
 
         // set successor's fields
@@ -685,7 +863,7 @@ public class AVLTree {
                 node.getParent().setLeft(successor);
             }
         }
-        return nodeForRebalance;
+        return directChild ? successor: nodeForRebalance;
     }
 
     /**
@@ -799,7 +977,7 @@ public class AVLTree {
                 }
             }
         }
-        updateSizeForAncestors(node, -1);
+        updateSizeForAncestors(node);
         return numOperations;
     }
 
@@ -923,6 +1101,41 @@ public class AVLTree {
         node.setHeight(node.getHeight() + 1);
         node.setSize(node.getLeft().getSize() + node.getRight().getSize() + 1);
         return node.getParent();
+    }
+
+    /**
+     * private void fromNodeToTree(IAVLNode node)
+     * <p>
+     * adjusts the tree fields to contain the given node
+     * tree is not with valid min and max after this function!
+     * use only in split.
+     */
+    private void fromNodeToTree(IAVLNode node) {
+        node.setParent(null);
+        this.root = node;
+        this.minNode = node;
+        this.maxNode = node;
+    }
+
+    /**
+     * private void updateMinMaxForJoin()
+     * <p>
+     * find the correct min and max in tree, and update fields
+     */
+    private void updateMinMaxForJoin()
+    {
+        IAVLNode currNode = this.root;
+        while (currNode.getLeft().isRealNode())
+        {
+            currNode = currNode.getLeft();
+        }
+        this.minNode = currNode;
+        currNode = this.root;
+        while (currNode.getRight().isRealNode())
+        {
+            currNode = currNode.getRight();
+        }
+        this.maxNode = currNode;
     }
 
 

@@ -2,6 +2,63 @@ import javax.naming.PartialResultException;
 
 public class Tester {
     public static void main(String[] args) {
+//        AVLTree splitt = new AVLTree();
+//        splitt.insert(100, "100");
+//        splitt.insert(101, "101");
+//        splitt.insert(102,"102");
+//        splitt.insert(103,"103");
+//        splitt.insert(104,"104");
+//        splitt.insert(105,"105");
+//        splitt.insert(106,"106");
+//        splitt.insert(107,"107");
+//        splitt.insert(108,"108");
+//       //printTree(splitt.getRoot());
+//        AVLTree[] splitarr = splitt.split(108);
+//        AVLTree t1 = splitarr[0];
+//        AVLTree t2 = splitarr[1];
+//        System.out.println("t1 min: " + t1.min());
+//        System.out.println("t1 max: " + t1.max());
+//        System.out.println("t2 min: " + t2.min());
+//        System.out.println("t2 max: " + t2.max());
+//        printTree(splitarr[0].getRoot());
+//        System.out.println("------------------------------");
+//        printTree(splitarr[1].getRoot());
+
+        AVLTree t1 = new AVLTree();
+        AVLTree t2 = new AVLTree();
+//        t1.insert(101,"101");
+//        t1.insert(102,"102");
+//        t2.insert(105, "105");
+//        t2.insert(104, "104");
+//        t2.insert(107, "107");
+//        t2.insert(106, "106");
+//        t2.insert(108, "108");
+//        printTree(t1.getRoot());
+//        printTree(t2.getRoot());
+        AVLTree x = new AVLTree();
+        x.insert(103,"103");
+        AVLTree.IAVLNode xNode = x.getRoot();
+        t1.join(xNode,t2);
+        printTree(t1.getRoot());
+
+
+
+//        AVLTree joint = new AVLTree();
+//        AVLTree t = new AVLTree();
+//        joint.insert(12,"12");
+//        joint.insert(20,"20");
+//        joint.insert(15,"15");
+//        joint.insert(17,"17");
+//        printTree(joint.getRoot());
+//        t.insert(10,"10");
+//        t.insert(2,"2");
+//        System.out.println("----------------------------------------");
+//        AVLTree x = new AVLTree();
+//        x.insert(11,"11");
+//        AVLTree.IAVLNode xNode = x.getRoot();
+//        System.out.println("diff:");
+//        System.out.println(joint.join(xNode,t));
+//        printTree(joint.getRoot());
 
 //
 //        AVLTree tree = new AVLTree();
@@ -136,23 +193,23 @@ public class Tester {
 //        }
 //        System.out.println("done all :)");
 
-        AVLTree avlTree = new AVLTree();
-        for (int i = 0; i < 100; i++) {
-            avlTree.insert(i, "num" + i);
-        }
-        System.out.println("size need to be 100: " + avlTree.size());
-        for (int i = 0; i < 50; i++) {
-            if (i==1){
-                printTree(avlTree.getRoot());
-            }
-            avlTree.delete(i);
-            System.out.println("delete " + i);
-        }
-        System.out.println("size need to be 50" + avlTree.size());
-        for (int i = 0; i < 25; i++) {
-            avlTree.insert(i, "num" + i);
-        }
-        System.out.println("size need to be 75" + avlTree.size());
+//        AVLTree avlTree = new AVLTree();
+//        for (int i = 0; i < 100; i++) {
+//            avlTree.insert(i, "num" + i);
+//        }
+//        System.out.println("size need to be 100: " + avlTree.size());
+//        for (int i = 0; i < 50; i++) {
+//            if (i==1){
+//                printTree(avlTree.getRoot());
+//            }
+//            avlTree.delete(i);
+//            System.out.println("delete " + i);
+//        }
+//        System.out.println("size need to be 50" + avlTree.size());
+//        for (int i = 0; i < 25; i++) {
+//            avlTree.insert(i, "num" + i);
+//        }
+//        System.out.println("size need to be 75" + avlTree.size());
 
         //try insert with rebalnce:
         //AVLTree t = new AVLTree();
