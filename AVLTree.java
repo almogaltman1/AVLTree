@@ -523,31 +523,30 @@ public class AVLTree {
      * <p>
      * Returns array of the tree nodes, inorder
      * if the tree is empty returns empty array
-     * index is for counting the index of array in recursion
      */
-    private static int index = 0;
 
     public IAVLNode[] inorder() {
         IAVLNode[] treeNodes = {};
         if (this.root != null) {
             treeNodes = new IAVLNode[this.root.getSize()];
-            inorder_rec(treeNodes, this.root);
+            int[] index = {0};
+            inorder_rec(treeNodes, this.root, index);
         }
-        index = 0;
         return treeNodes;
     }
 
     /**
-     * public void inorder_rec(IAVLNode[] arrToFill, IAVLNode x, int index)
+     * public void inorder_rec(IAVLNode[] arrToFill, IAVLNode x, int[] index)
      * <p>
      * fills arrToFill, inplace, where the nodes are from tree with the root x
+     * index array is to count the index to insert in the array in the recursion
      */
-    public void inorder_rec(IAVLNode[] arrToFill, IAVLNode x) {
+    public void inorder_rec(IAVLNode[] arrToFill, IAVLNode x, int[] index) {
         if (x.isRealNode()) {
-            inorder_rec(arrToFill, x.getLeft());
-            arrToFill[index] = x;
-            index++;
-            inorder_rec(arrToFill, x.getRight());
+            inorder_rec(arrToFill, x.getLeft(), index);
+            arrToFill[index[0]] = x;
+            index[0] += 1;
+            inorder_rec(arrToFill, x.getRight(), index);
         }
     }
 
