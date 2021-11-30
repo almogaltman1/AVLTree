@@ -1,4 +1,5 @@
 import javax.naming.PartialResultException;
+import java.util.Arrays;
 
 public class Tester {
     public static void main(String[] args) {
@@ -24,22 +25,22 @@ public class Tester {
 //        System.out.println("------------------------------");
 //        printTree(splitarr[1].getRoot());
 
-        AVLTree t1 = new AVLTree();
-        AVLTree t2 = new AVLTree();
-//        t1.insert(101,"101");
-//        t1.insert(102,"102");
-//        t2.insert(105, "105");
-//        t2.insert(104, "104");
-//        t2.insert(107, "107");
-//        t2.insert(106, "106");
-//        t2.insert(108, "108");
+//        AVLTree t1 = new AVLTree();
+//        AVLTree t2 = new AVLTree();
+////        t1.insert(101,"101");
+////        t1.insert(102,"102");
+////        t2.insert(105, "105");
+////        t2.insert(104, "104");
+////        t2.insert(107, "107");
+////        t2.insert(106, "106");
+////        t2.insert(108, "108");
+////        printTree(t1.getRoot());
+////        printTree(t2.getRoot());
+//        AVLTree x = new AVLTree();
+//        x.insert(103,"103");
+//        AVLTree.IAVLNode xNode = x.getRoot();
+//        t1.join(xNode,t2);
 //        printTree(t1.getRoot());
-//        printTree(t2.getRoot());
-        AVLTree x = new AVLTree();
-        x.insert(103,"103");
-        AVLTree.IAVLNode xNode = x.getRoot();
-        t1.join(xNode,t2);
-        printTree(t1.getRoot());
 
 
 
@@ -443,22 +444,18 @@ public class Tester {
 //        node12.setLeft(node42);
 //
 //        t2.root = root2;
-
-        //will not  really work until set size be good
-//        t2.getRoot().setSize(5);
-//        node12.setSize(3);
-//        node22.setSize(1);
-//        node32.setSize(1);
-//        node42.setSize(1);
+//
+//        AVLTree t2 = new AVLTree();
+//        t2.insert(7,"blah");
+//        t2.insert(3,"bloop");
+//        t2.insert(10,"blap");
+//        t2.insert(4,"blip");
 //        int[] keys = t2.keysToArray();
 //        String[] info = t2.infoToArray();
 //        System.out.println(Arrays.toString(keys));
 //        System.out.println(Arrays.toString(info));
-
-//        t2.rotationLeft(root2);
-//        root2 = t2.getRoot();
 //
-//        printTree(root2);
+//        printTree(t2.getRoot());
 
 
 
