@@ -282,6 +282,10 @@ public class AVLTree {
      * time complexity - O(|this.getRoot().getHeight() - t.getRoot().getHeight()| + 1)
      */
     public int join(IAVLNode x, AVLTree t) {
+        if (t == null){
+            t = new AVLTree();
+        }
+
         //cases of empty trees
         if (this.empty() || t.empty()){
             int ret = 1;
@@ -372,7 +376,7 @@ public class AVLTree {
     //helping functions
 
     /**
-     * private IAVLNode treePosition(int k)
+     * private IAVLNode treePosition(IAVLNode x, int k)
      * <p>
      * Looks for k in the tree. Returns the last node encountered
      * <p>
@@ -967,11 +971,11 @@ public class AVLTree {
                 } else if (rightLeftDiff == 2 && rightRightDiff == 1) {
                     //case 3, isLeft == true
                     node = case3DeleteRebalance(node, true);
-                    numOperations += 3;
+                    numOperations += 2;
                 } else if (rightLeftDiff == 1 && rightRightDiff == 2) {
                     //case 4, isLeft == true
                     node = case4DeleteRebalance(node, true);
-                    numOperations += 6;
+                    numOperations += 5;
                 }
             } else if (leftDiff == 1 && rightDiff == 3) {
                 IAVLNode leftSon = node.getLeft();
@@ -984,11 +988,11 @@ public class AVLTree {
                 } else if (leftLeftDiff == 1 && leftRightDiff == 2) {
                     //case 3, isLeft == false
                     node = case3DeleteRebalance(node, false);
-                    numOperations += 3;
+                    numOperations += 2;
                 } else if (leftLeftDiff == 2 && leftRightDiff == 1) {
                     //case 4, isLeft == false
                     node = case4DeleteRebalance(node, false);
-                    numOperations += 6;
+                    numOperations += 5;
                 }
             }
         }

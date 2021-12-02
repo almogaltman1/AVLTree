@@ -3,6 +3,19 @@ import java.util.Arrays;
 
 public class Tester {
     public static void main(String[] args) {
+
+        AVLTree t = new AVLTree();
+        t.insert(20,"20");
+        t.insert(19,"19");
+        t.insert(18,"18");
+        t.insert(17,"17");
+        t.insert(16,"16");
+        t.insert(15,"15");
+        t.insert(14,"14");
+
+        printTree(t.getRoot());
+
+
 //        AVLTree splitt = new AVLTree();
 //        splitt.insert(100, "100");
 //        splitt.insert(101, "101");
