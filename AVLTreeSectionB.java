@@ -23,10 +23,16 @@
 //        cntSearch++;
 //        x = this.maxNode;
 //        IAVLNode y = null;
+//
 //        //empty tree
 //        if (x == null) {
 //            return y;
 //        }
+//        //new max
+//        if (k > x.getKey()){
+//            return x;
+//        }
+//
 //        //go up
 //        while (x.getParent() != null && (k > x.getKey() || k<x.getParent().getKey()) && k < x.getKey()) {
 //            cntSearch++;
@@ -153,7 +159,7 @@
 //
 //    public static void main(String[] args){
 //        //Q1
-//        int i = 5; //serial number
+//        int i = 1; //serial number
 //        AVLTreeSectionB tOrder = new AVLTreeSectionB();
 //        AVLTreeSectionB tRandom = new AVLTreeSectionB();
 //        int n = (int) (1000 * Math.pow(2, i));
@@ -234,7 +240,7 @@
 //
 //
 ////       Q1 tests
-////       AVLTreeSectionB t = new AVLTreeSectionB();
+//       AVLTreeSectionB t = new AVLTreeSectionB();
 ////        t.insert(5,"5");
 ////        t.insert(4,"4");
 ////        t.insert(10,"10");
@@ -260,7 +266,7 @@
 ////        System.out.println(t.treePosition(t.maxNode, 9).getKey()); //not in tree
 ////        System.out.println(t.treePosition(t.maxNode, 20).getKey());
 ////        System.out.println(t.treePosition(t.maxNode, 15).getKey());
-////        System.out.println(t.cntSearch);
+//        System.out.println(t.cntSearch);
 //
 ////        AVLTreeSectionB empty = new AVLTreeSectionB();
 ////        System.out.println(empty.treePosition(empty.maxNode, 5) == null);
