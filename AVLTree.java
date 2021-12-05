@@ -77,7 +77,7 @@ public class AVLTree {
         //else - insert (tree is not empty, and key is valid)
         IAVLNode nodeForRebalance = insertBeforeRebalance(newNode, parentToNewNode);
 
-        //rebalnce
+        //re-balance
         return rebalanceAfterInsertOrJoin(nodeForRebalance);
     }
 
@@ -105,7 +105,7 @@ public class AVLTree {
         // update min and max fields in the tree
         updateMinMaxFieldsInDelete(nodeToDelete);
 
-        // delete the node and find from which node to start the rebalance from
+        // delete the node and find from which node to start the re-balance from
         IAVLNode nodeForRebalance = deleteBeforeRebalance(nodeToDelete);
 
         return rebalanceAfterDelete(nodeForRebalance);
@@ -207,7 +207,7 @@ public class AVLTree {
      * time complexity - O(logn)
      */
     public AVLTree[] split(int x) {
-        //min and max of subtrees will not br correct until end
+        //min and max of t1 and t2 will not br correct until end
         AVLTree t1 = new AVLTree();
         AVLTree t2 = new AVLTree();
         AVLTree temp = new AVLTree();
@@ -226,7 +226,7 @@ public class AVLTree {
             t2.fromNodeToTree(rightx);
         }
 
-        //split the parent of x and upwards
+        //split from the parent of x and upwards
         nodex = nodex.getParent();
         IAVLNode parentx;
         while (nodex != null) {
@@ -260,7 +260,7 @@ public class AVLTree {
             }
             nodex = parentx;
         }
-        //now we have t1 and t2, but min and max are wrong
+        //now we have t1 and t2, but their min and max are wrong
         if (!t1.empty()){
             t1.updateMinMaxForJoin();
         }
@@ -282,6 +282,14 @@ public class AVLTree {
      * time complexity - O(|this.getRoot().getHeight() - t.getRoot().getHeight()| + 1)
      */
     public int join(IAVLNode x, AVLTree t) {
+
+        //change nodex to be isolated node
+        x.setParent(null);
+        x.setRight(new AVLNode(x));
+        x.setLeft(new AVLNode(x));
+        x.setHeight(0);
+        x.setSize(1);
+
         if (t == null){
             t = new AVLTree();
         }
@@ -403,7 +411,7 @@ public class AVLTree {
      * <p>
      * precondition: there is a real left son for node
      * precondition: node is not null
-     * postcondition: the result is a legal BTS after a single left rotation
+     * postcondition: the result is a legal BST after a single left rotation
      * time complexity - O(1)
      */
     private void rotationRight(IAVLNode node) {
@@ -441,7 +449,7 @@ public class AVLTree {
      * <p>
      * precondition: there is a real right son for node
      * precondition: node is not null
-     * postcondition: the result is a legal BTS after a single left rotation
+     * postcondition: the result is a legal BST after a single left rotation
      * time complexity - O(1)
      */
     private void rotationLeft(IAVLNode node) {
@@ -563,7 +571,7 @@ public class AVLTree {
     /**
      * private void updateSizeForAncestors(IAVLNode node)
      * <p>
-     * updated all sized of ancestors after a deletion was made
+     * updates all sizes of ancestors after a deletion or insertion were made
      * precondition: none
      * time complexity - O(logn)
      */
@@ -636,7 +644,7 @@ public class AVLTree {
                 else if (leftLeftDiff == 1 && leftRightDiff == 1) {
                     //case 4 isLeft == true
                     node = case4JoinRebalance(node, true);
-                    numOperations += 2; //dosen't matter
+                    numOperations += 2; //not needed for join
                 }
             } else if (diffLeft == 2 && diffRight == 0) {
                 IAVLNode rightSon = node.getRight();
@@ -656,7 +664,7 @@ public class AVLTree {
                 else if (rightLeftDiff == 1 && rightRightDiff == 1) {
                     //case 4 isLeft == false
                     node = case4JoinRebalance(node, false);
-                    numOperations += 2; //dosen't matter
+                    numOperations += 2; //not needed for join
                 }
             }
             //update before checking the while condition
@@ -673,7 +681,7 @@ public class AVLTree {
     /**
      * private IAVLNode case1InsertRebalance(IAVLNode node)
      * <p>
-     * rebalance local and return the next node that need to rebalance
+     * Conducts a local rebalance and returns the next node needed to rebalance
      * <p>
      * precondition: we are in this case:
      *          z
@@ -690,7 +698,7 @@ public class AVLTree {
     /**
      * private IAVLNode case2InsertRebalance(IAVLNode node, boolean isLeft)
      * <p>
-     * rebalance local and return the next node that need to rebalance
+     * Conducts a local rebalance and returns the next node needed to rebalance
      * <p>
      * precondition: we are in this case if isLeft == true:
      *     z
@@ -722,7 +730,7 @@ public class AVLTree {
     /**
      * private IAVLNode case3InsertRebalance(IAVLNode node, boolean isLeft)
      * <p>
-     * rebalance local and return the next node that need to rebalance
+     * Conducts a local rebalance and returns the next node needed to rebalance
      * <p>
      * precondition: we are in this case if isLeft == true:
      *     z
@@ -767,7 +775,7 @@ public class AVLTree {
     /**
      * private IAVLNode case4JoinRebalance(IAVLNode node, boolean isLeft)
      * <p>
-     * rebalance local and return the next node that need to rebalance
+     * Conducts a local rebalance and returns the next node needed to rebalance
      * <p>
      * precondition: we are in this case if isLeft == true:
      *     z
@@ -799,7 +807,7 @@ public class AVLTree {
     /**
      * private int diffBetweenParentAndChildes(IAVLNode parent)
      * <p>
-     * rebalances the tree after an insert of a node
+     * returns an array of height differences between parent and his children
      * precondition: none
      * time complexity - O(1)
      */
@@ -1003,7 +1011,7 @@ public class AVLTree {
     /**
      * private IAVLNode case1DeleteRebalance(IAVLNode node)
      * <p>
-     * rebalance local and return the next node that need to rebalance
+     * Conducts a local rebalance and returns the next node needed to rebalance
      * <p>
      * precondition: we are in this case:
      *   z
@@ -1020,7 +1028,7 @@ public class AVLTree {
     /**
      * private IAVLNode case2DeleteRebalance(IAVLNode node, boolean isLeft)
      * <p>
-     * rebalance local and return the next node that need to rebalance
+     * Conducts a local rebalance and returns the next node needed to rebalance
      * <p>
      * precondition: we are in this case if isLeft == true:
      *   z
@@ -1053,7 +1061,7 @@ public class AVLTree {
     /**
      * private IAVLNode case3DeleteRebalance(IAVLNode node, boolean isLeft)
      * <p>
-     * rebalance local and return the next node that need to rebalance
+     * Conducts a local rebalance and returns the next node needed to rebalance
      * <p>
      * precondition: we are in this case if isLeft == true:
      *   z
@@ -1085,7 +1093,7 @@ public class AVLTree {
     /**
      * private IAVLNode case4DeleteRebalance(IAVLNode node, boolean isLeft)
      * <p>
-     * rebalance local and return the next node that need to rebalance
+     * Conducts a local rebalance and returns the next node needed to rebalance
      * <p>
      * precondition: we are in this case if isLeft == true:
      *    z
@@ -1144,7 +1152,7 @@ public class AVLTree {
     /**
      * private void updateMinMaxForJoin()
      * <p>
-     * find the correct min and max in tree, and update fields
+     * finds the correct min and max in tree, and update fields
      * time complexity - O(logn)
      */
     private void updateMinMaxForJoin()
