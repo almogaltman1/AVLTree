@@ -1004,6 +1004,7 @@ public class AVLTree {
                     //case 2, isLeft == false
                     node = case2DeleteRebalance(node, false);
                     numOperations += 3;
+                    break; //this is a terminate case
                 } else if (leftLeftDiff == 1 && leftRightDiff == 2) {
                     //case 3, isLeft == false
                     node = case3DeleteRebalance(node, false);

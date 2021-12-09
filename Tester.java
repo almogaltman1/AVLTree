@@ -37,9 +37,9 @@ public class Tester {
 //        printTree(splitarr[0].getRoot());
 //        System.out.println("------------------------------");
 //        printTree(splitarr[1].getRoot());
-
-        AVLTree t1 = new AVLTree();
-        AVLTree t2 = new AVLTree();
+//
+//        AVLTree t1 = new AVLTree();
+//        AVLTree t2 = new AVLTree();
 //        t1.insert(101,"101");
 //        t1.insert(102,"102");
 //        t2.insert(105, "105");
@@ -473,6 +473,87 @@ public class Tester {
 
 
 
+        size();
+
+
+
+
+    }
+    static public boolean size() {
+        AVLTree avlTree = new AVLTree();
+        for (int i = 0; i < 100; i++) {
+            avlTree.insert(i, String.valueOf(i));
+            if(!(checkBalanceOfTree(avlTree.getRoot()) && checkOrderingOfTree(avlTree.getRoot()) &&
+                    checkPointers(avlTree.getRoot()) && avlTree.getRoot().getParent() == null)) {
+                return false;
+            }
+        }
+        System.out.println("finish insert");
+        for (int i = 0; i < 50; i++) {
+            avlTree.delete(i);
+            if(!(checkBalanceOfTree(avlTree.getRoot()) && checkOrderingOfTree(avlTree.getRoot()) &&
+                    checkPointers(avlTree.getRoot()) && avlTree.getRoot().getParent() == null)) {
+                return false;
+            }
+        }
+        System.out.println("finish delete");
+        for (int i = 0; i < 25; i++) {
+            avlTree.insert(i, String.valueOf(i));
+            if(!(checkBalanceOfTree(avlTree.getRoot()) && checkOrderingOfTree(avlTree.getRoot()) &&
+                    checkPointers(avlTree.getRoot()) && avlTree.getRoot().getParent() == null)) {
+                return false;
+            }
+        }
+        if(avlTree.size() == 75 && !(checkBalanceOfTree(avlTree.getRoot()) && checkOrderingOfTree(avlTree.getRoot()) &&
+                checkPointers(avlTree.getRoot()) && avlTree.getRoot().getParent() == null)) {
+            return false;
+        }
+        System.out.println("finish insert, restart");
+
+        avlTree = new AVLTree();
+        for (int i = 100; i > 0; i--) {
+            avlTree.insert(i, String.valueOf(i));
+            if(!(checkBalanceOfTree(avlTree.getRoot()) && checkOrderingOfTree(avlTree.getRoot()) &&
+                    checkPointers(avlTree.getRoot()) && avlTree.getRoot().getParent() == null)) {
+                return false;
+            }
+        }
+        System.out.println("finish insert");
+        for (int i = 100; i > 50; i--) {
+            printTree(avlTree.getRoot());
+            System.out.println("------------------------------------------------------------");
+            avlTree.delete(i);
+            System.out.println("finish delete " + i);
+            if(!(checkBalanceOfTree(avlTree.getRoot()) && checkOrderingOfTree(avlTree.getRoot()) &&
+                    checkPointers(avlTree.getRoot()) && avlTree.getRoot().getParent() == null)) {
+                return false;
+            }
+            System.out.println("finish check after " + i);
+        }
+        System.out.println("finish delete");
+        for (int i = 100; i > 75; i--) {
+            avlTree.insert(i, String.valueOf(i));
+            if(!(checkBalanceOfTree(avlTree.getRoot()) && checkOrderingOfTree(avlTree.getRoot()) &&
+                    checkPointers(avlTree.getRoot()) && avlTree.getRoot().getParent() == null)) {
+                return false;
+            }
+        }
+        System.out.println("finish insert");
+        return (avlTree.size() == 75 && checkBalanceOfTree(avlTree.getRoot()) && checkOrderingOfTree(avlTree.getRoot()));
+    }
+    static public boolean checkPointers(AVLTree.IAVLNode current) {
+        boolean pointersRight = true, pointersLeft = true;
+        boolean left = true , right = true;
+        if (current.getRight() != null) {
+            pointersRight = checkBalanceOfTree(current.getRight());
+            right = current.getRight().getParent() == current;
+        }
+        if (current.getLeft() != null) {
+            pointersLeft = checkBalanceOfTree(current.getLeft());
+            left = current.getLeft().getParent() == current;
+        }
+
+        return pointersLeft && pointersRight && left && right;
     }
 
     static boolean checkOrderingOfTree(AVLTree.IAVLNode current) {
