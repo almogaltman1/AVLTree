@@ -3,17 +3,17 @@ import java.util.Arrays;
 
 public class Tester {
     public static void main(String[] args) {
-
-        AVLTree t = new AVLTree();
-        t.insert(20,"20");
-        t.insert(19,"19");
-        t.insert(18,"18");
-        t.insert(17,"17");
-        t.insert(16,"16");
-        t.insert(15,"15");
-        t.insert(14,"14");
-
-        printTree(t.getRoot());
+//
+//        AVLTree t = new AVLTree();
+//        t.insert(20,"20");
+//        t.insert(19,"19");
+//        t.insert(18,"18");
+//        t.insert(17,"17");
+//        t.insert(16,"16");
+//        t.insert(15,"15");
+//        t.insert(14,"14");
+//
+//        printTree(t.getRoot());
 
 
 //        AVLTree splitt = new AVLTree();
@@ -27,7 +27,7 @@ public class Tester {
 //        splitt.insert(107,"107");
 //        splitt.insert(108,"108");
 //       //printTree(splitt.getRoot());
-//        AVLTree[] splitarr = splitt.split(108);
+//        AVLTree[] splitarr = splitt.split(105);
 //        AVLTree t1 = splitarr[0];
 //        AVLTree t2 = splitarr[1];
 //        System.out.println("t1 min: " + t1.min());
@@ -38,25 +38,26 @@ public class Tester {
 //        System.out.println("------------------------------");
 //        printTree(splitarr[1].getRoot());
 
-//        AVLTree t1 = new AVLTree();
-//        AVLTree t2 = new AVLTree();
-////        t1.insert(101,"101");
-////        t1.insert(102,"102");
-////        t2.insert(105, "105");
-////        t2.insert(104, "104");
-////        t2.insert(107, "107");
-////        t2.insert(106, "106");
-////        t2.insert(108, "108");
-////        printTree(t1.getRoot());
-////        printTree(t2.getRoot());
+        AVLTree t1 = new AVLTree();
+        AVLTree t2 = new AVLTree();
+//        t1.insert(101,"101");
+//        t1.insert(102,"102");
+//        t2.insert(105, "105");
+//        t2.insert(104, "104");
+//        t2.insert(107, "107");
+//        t2.insert(106, "106");
+//        t2.insert(108, "108");
+//        printTree(t1.getRoot());
+//        printTree(t2.getRoot());
 //        AVLTree x = new AVLTree();
 //        x.insert(103,"103");
 //        AVLTree.IAVLNode xNode = x.getRoot();
 //        t1.join(xNode,t2);
 //        printTree(t1.getRoot());
+//        System.out.println((xNode.getParent()));
 
 
-
+//
 //        AVLTree joint = new AVLTree();
 //        AVLTree t = new AVLTree();
 //        joint.insert(12,"12");

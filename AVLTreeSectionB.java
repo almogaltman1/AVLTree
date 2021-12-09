@@ -266,7 +266,7 @@
 ////        System.out.println(t.treePosition(t.maxNode, 9).getKey()); //not in tree
 ////        System.out.println(t.treePosition(t.maxNode, 20).getKey());
 ////        System.out.println(t.treePosition(t.maxNode, 15).getKey());
-//        System.out.println(t.cntSearch);
+////        System.out.println(t.cntSearch);
 //
 ////        AVLTreeSectionB empty = new AVLTreeSectionB();
 ////        System.out.println(empty.treePosition(empty.maxNode, 5) == null);

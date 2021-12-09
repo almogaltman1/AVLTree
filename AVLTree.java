@@ -305,11 +305,22 @@ public class AVLTree {
                     this.minNode = t.minNode;
                     this.maxNode = t.maxNode;
                 }
+                else { //both are empty
+                    this.root = x;
+                    this.maxNode = x;
+                    this.minNode = x;
+                    return ret;
+                }
             }
             else if (t.empty()){
                 ret += this.getRoot().getHeight() + 1;
             }
-            this.insert(x.getKey(), x.getValue());
+
+            //insert x to relevant tree
+            IAVLNode parentToNewNode = treePosition(this.root, x.getKey()); //x will be new min or new max
+            x.setParent(parentToNewNode);
+            IAVLNode nodeForRebalance = insertBeforeRebalance(x, parentToNewNode); //insert x to tree
+            rebalanceAfterInsertOrJoin(nodeForRebalance); //re-balance
             return ret;
         }
 
